@@ -65,6 +65,16 @@ my-sds320-project/
 └── report/                <- Final written report
 ```
 
+**Run this in your terminal or command-line to create the directory structure and placeholder files:**
+   ```bash
+mkdir -p data/{raw,processed,training} notebooks scripts results/{figures,maps,predictions,evaluation} report
+
+touch README.md environment.yml .gitignore data/README.md \
+      notebooks/01_explore_data.ipynb \
+      notebooks/02_preprocess_data.ipynb \
+      notebooks/03_results_and_figures.ipynb \
+      scripts/preprocessing.py scripts/plotting.py
+   ```
 ---
 ## How to run
 
