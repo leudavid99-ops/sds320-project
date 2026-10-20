@@ -1,0 +1,8 @@
+dataset,role,provider,access_route,resolution_or_geometry,coverage_time,format,crs,licence_attribution,main_limitation,status
+Sentinel-2 L2A,main raster,ESA/Copernicus,STAC (Earth Search AWS / CDSE / Planetary Computer),10-20 m,2017-2025 summers,COG/JP2,EPSG:32632,Copernicus open data - attribute Sentinel data,Clouds/snow/shadow; mixed pixels,to test
+Forest area (swissTLM3D),context,swisstopo,geo.admin.ch / opendata.swiss,polygon,current,GPKG/SHP,EPSG:2056,swisstopo OGD (verify),Mask may not match 2018+ state,to verify
+Vegetation Height Model (NFI),context,WSL/BAFU,geo.admin.ch / WSL,1 m raster,epoch-based,GeoTIFF,EPSG:2056,verify,Large size; epoch mismatch,to verify
+Forest mixture degree,context/stratification,WSL/BAFU,geo.admin.ch / opendata.swiss,raster,single epoch,GeoTIFF,EPSG:2056,verify,Coarse; single epoch,to verify
+swissIMAGE,validation,swisstopo,WMTS / download,orthophoto,update cycle ~3 yrs,GeoTIFF/WMTS,EPSG:2056,swisstopo OGD (verify),Acquisition dates not aligned with S2,to verify
+swissALTI3D,context,swisstopo,download,2 m DEM,current,GeoTIFF,EPSG:2056,swisstopo OGD (verify),Large file size,to verify
+Documented damage data,labels/validation,Canton VS / WSL,request / literature,polygon/point (tbd),tbd,tbd,tbd,tbd,Availability unclear,open
