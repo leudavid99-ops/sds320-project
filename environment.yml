@@ -18,15 +18,19 @@ dependencies:
   - rasterio
   - rioxarray
   - xarray
+  - netCDF4
   - geopandas
   - shapely
   - fiona
   - pyogrio
+  - mapclassify
+  - joblib
 
   # General scientific Python
   - numpy
   - pandas
   - matplotlib
+  - scipy
   - scikit-learn
   - scikit-image
   - tqdm
@@ -39,10 +43,13 @@ dependencies:
   - pystac-client
   - planetary-computer
   - odc-stac
+  - odc-geo
+  - dask
 
   # Use Pip for the GeoAI and specific rendering tools
   - pip:
     - geoai-py
+    - geotessera
     - torch
     - torchgeo
     - torchvision

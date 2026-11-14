@@ -1,0 +1,26 @@
+# system / editor
+.DS_Store
+.Rhistory
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+
+# large or derived data (rebuilt by the notebooks, see README "How to run")
+data/raw/
+data/training/
+data/labels/
+data/processed/*.nc
+data/processed/*.gpkg
+data/processed/*.csv.gz
+data/processed/*.joblib
+data/processed/tessera/
+data/processed/tiles/
+data/processed/models/
+lightning_logs/
+
+# personal backups
+notebooks/*_old.ipynb
+
+# raw TESSERA tiles cached by geotessera in the working directory
+global_0.1_degree_representation/
+**/global_0.1_degree_representation/

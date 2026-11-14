@@ -1,59 +1,64 @@
-# Data inventory – SDS320 project
+# Data acquisition plan – SDS320 (refined)
 
-Project question: How well can Sentinel-2-derived vegetation stress indices identify and map the severity of drought-induced forest dieback in the Jura/Valais region since the severe 2018 summer drought, compared to already documented damage patterns?
-Study area: Valais (Rhône valley, Pinus sylvestris dieback; core test area Pfynwald/Leuk). Jura = optional comparison area if time allows.
-Time period: Summer composites (Jun–Aug) 2017 (pre-drought baseline), 2018 (drought), 2019–2025 (recovery/dieback)
+**Project question:**
+How well can Sentinel-2 (10 m) separate healthy, declining and dead beech canopy after the 2018 drought, and does a model trained in the Aargau transfer to the Ajoie (JU)? A second stage (high-resolution NIR, true crowns, ordinal damage class per crown) follows once the Sentinel-2 baseline is understood.
 
----
+**Study area:** three AOIs (approximate bounding boxes, to be replaced by HETRES / forest-service polygons)
 
-Main raster dataset: Sentinel-2 L2A surface reflectance
-Provider: ESA / Copernicus
-Access route: STAC API (Earth Search by Element84 on AWS, no login) – alternatives: Copernicus Data Space Ecosystem, Microsoft Planetary Computer
-Search criteria: bbox of study area, datetime 2017-06-01 to 2025-08-31, collection `sentinel-2-l2a`, eo:cloud_cover < 20 %, summer months only
-Useful assets or bands: B04 red, B08 NIR, B05/B06/B07 red edge, B8A, B11/B12 SWIR, SCL (scene classification for cloud/shadow masking)
-Indices to derive: NDVI, NDMI (moisture, B08/B11), NDRE (B08/B05), NBR (B08/B12), EVI; delta vs. 2017 baseline
-Resolution / coverage: 10 m (VIS/NIR), 20 m (red edge/SWIR), revisit ~5 days, archive from 2017 for Europe
-Expected output: Per-pixel anomaly (index change vs. baseline) per year and a dieback-severity map for the study area
-Main limitation: Clouds/snow/shadow in alpine terrain; 10–20 m pixels mix healthy and dead trees; phenology and slope/aspect effects can mimic stress
-
----
-
-Main vector/context dataset: Reference and forest context layers (to be verified for availability and licence)
-
-| Dataset | Provider | Access route | Role in project | Geometry |
-|---|---|---|---|---|
-| Forest area (swissTLM3D, Wald) | swisstopo | geo.admin.ch / opendata.swiss | Context: forest mask to restrict analysis | Polygon |
-| Vegetation Height Model (NFI) | WSL / BAFU | Download via WSL / geo.admin.ch | Context: forest height, stand structure, filter out non-forest | Raster (1 m) |
-| Forest mixture degree (Waldmischungsgrad) | WSL / BAFU | geo.admin.ch / opendata.swiss | Context/stratification: conifer vs. broadleaf (pine dieback) | Raster |
-| swissIMAGE (orthophoto) | swisstopo | WMTS / Download | Validation: visual check of dead crowns | Raster |
-| swissALTI3D (DEM) | swisstopo | Download | Context: slope, aspect, elevation | Raster |
-| Documented damage data (Canton Valais forest service; WSL/ICP Forests) | Canton VS / WSL | Request / literature | Labels/validation: documented dieback patterns | Polygon/point (to be checked) |
-
-Role in project: Forest mask and stratification (context), documented damage as reference for evaluation
-Main limitation: Documented damage data may not be openly available or may be spatially incomplete – fallback is visual validation with swissIMAGE and published studies
-
----
-
-Small test:
-What I tested: (planned) STAC search for Sentinel-2 L2A over a small bbox around Pfynwald, summers 2017/2018/2022, cloud cover < 20 %; load one scene, compute NDVI/NDMI (see `notebooks/01_data_search.ipynb`)
-What worked: – (to fill in after running the notebook)
-What did not work: – (to fill in)
-Next decision: Confirm study area (Valais only vs. + Jura), choose main index, check availability of reference damage data
-
----
-
-## Documentation
-
-| Dataset | Format | CRS | Licence / attribution |
+| AOI | Role | Bbox (lon/lat) | Rationale |
 |---|---|---|---|
-| Sentinel-2 L2A | COG/JP2 via STAC | UTM 32N (EPSG:32632) | Copernicus open data policy – attribute "Contains modified Copernicus Sentinel data [year]" |
-| swisstopo layers | GeoTIFF / GPKG / Shapefile | CH1903+/LV95 (EPSG:2056) | swisstopo OGD – free use, source must be cited (to verify per dataset) |
-| NFI/WSL layers | GeoTIFF | EPSG:2056 | Check per dataset before publishing |
+| Ajoie (JU) | target / out-of-region test | 7.02, 47.39 – 7.20, 47.50 | Beech dieback area of the swisstopo/STDL CLASSIFY project |
+| Fricktal / Tafeljura (AG) | training / validation | 7.93, 47.42 – 8.10, 47.53 | Comparable limestone, beech-dominated forest |
+| Rhone valley (VS) | domain-shift test | 7.50, 46.25 – 7.70, 46.35 | Dry inner-alpine valley; mostly pine/oak, not a like-for-like beech case |
+
+**Time period:** 2017 (pre-drought baseline), 2018 (drought), 2019–2026 (lagged mortality, current state). Two windows per year: 15 Jun–31 Jul (peak) and 15 Aug–30 Sep (late, senescence).
+
+---
+
+## Main raster dataset
+**Dataset:** Sentinel-2 L2A surface reflectance
+**Provider:** ESA / Copernicus, hosted on Microsoft Planetary Computer
+**Access route:** STAC API (`pystac-client`), windowed COG reads with `rasterio`, no login. Alternative: Copernicus Data Space Ecosystem.
+**Search criteria:** collection `sentinel-2-l2a`, bbox per AOI, the two windows above, `eo:cloud_cover < 70`, pixel-level cloud mask from the SCL band.
+**Useful assets or bands:** B02, B03, B04, B08 (10 m); B05, B07, B8A, B11, B12 (20 m, resampled to 10 m); SCL. Derived: NDVI, NDRE, CIre, NDMI, NBR.
+**Expected output:** cloud-masked median composites per AOI, year and window; per-unit stress features (ΔNDVI vs 2017 etc.) for the training notebook.
+**Main limitation:** 10 m is too coarse for individual beech crowns (1–2 pixels), so objects are canopy units, not crowns. Year-to-year NDVI differences also mix drought signal with phenology and haze. Processing baseline ≥ 04.00 requires the +1000 DN offset to be handled.
+**Licence / attribution:** free and open; cite "Contains modified Copernicus Sentinel data [year]".
+
+## Main vector / context datasets
+| Dataset | Provider | Access route | Role | Main limitation |
+|---|---|---|---|---|
+| ESA WorldCover 2021 | ESA (Planetary Computer) | STAC `esa-worldcover` | context: forest mask | no species, single epoch |
+| Copernicus DEM GLO-30 | ESA (Planetary Computer) | STAC `cop-dem-glo-30` | context: elevation, slope, aspect | 30 m source |
+| Beech health labels (STDL HETRES) | Canton of Jura (via STDL) | **not public**; request from the canton | **labels / validation** | proprietary; 226 trees, Jura only |
+| TESSERA embeddings | Univ. of Cambridge (geotessera) | `geoai.tessera_download`, no login | alternative features (128-d, 10 m, annual) | embedding dimensions have no physical meaning |
+| WSL "1000 beech trees" | WSL / EnviDat | EnviDat download | possible labels for the Aargau-type region | coordinates and site overlap unverified |
+| swissBOUNDARIES3D | swisstopo | geo.admin.ch OGD | context: boundaries, map layout | no ecological content |
+| Forest species / mixture map | FOEN / WSL | to be identified | beech-specific mask | product not yet identified |
+
+Full list with formats, CRS and licence notes: `data_inventory.csv`.
+
+---
+
+## Small test
+**What I tested:** `notebooks/01_data_search.ipynb`: one AOI (Ajoie), one 2 × 2 km subset, window late 2018, STAC search, loading of the least cloudy scene (B04, B08, SCL), NDVI map, valid-pixel share, plus a check for label files. Results are written to `data/data_test_results.csv`.
+**What worked:** the STAC search (16 scenes for late summer 2018, best scene 0.04 % cloud, 23 s), loading the least cloudy scene for the subset (27 s), the SCL mask (99.8 % valid pixels) and NDVI (median 0.72). All years 2017–2026 have at least 8 scenes per window.
+**What did not work:** no labels. The HETRES ground truth is not public (checked 14 Nov 2026: the STDL repository holds code only, the data belong to the Canton of Jura). No beech-specific forest mask identified yet. Loading the full Ajoie AOI with `odc-stac` + dask hung (two MGRS tiles in different UTM zones); the composites are now read with plain `rasterio` (`scripts/sds_utils.py`).
+**Next decision:**
+1. Obtain beech health labels (HETRES ground truth or WSL data). Without labels the training notebook can only run with circular proxy labels.
+2. Decide whether Valais stays as third AOI or is replaced by a beech-dominated region (e.g. in the Pre-Alps), since pine/oak forest tests a different question.
+3. Request the NIR orthophoto data for the second (high-resolution) stage.
+
+---
 
 ## Reflection
+1. **Most central dataset:** Sentinel-2 for the baseline; the beech health labels decide whether the project can be evaluated at all.
+2. **Main data risk:** missing or unusable labels, followed by 10 m resolution versus crown size.
+3. **Smallest useful test:** the 2 × 2 km, single-scene test above.
+4. **Open licence / sharing issues:** HETRES labels, WSL data, any NIR orthophotos; Sentinel-2, WorldCover and DEM attribution wording to be verified before publishing.
+5. **If access gets harder:** shrink to Ajoie plus Aargau only, fewer years (2017–2019 plus one recent year), stand-level instead of unit-level classes.
 
-1. Most central dataset: Sentinel-2 L2A time series.
-2. Main data risk: No reliable reference/damage labels → evaluation unclear.
-3. Smallest test: One bbox, one summer scene per year (2017/2018/2022), NDVI/NDMI map overlay on swissIMAGE.
-4. Still to check: Licence of cantonal/WSL damage data and VHM before publishing results.
-5. Simplification if access gets hard: Smaller area (Pfynwald only), fewer years, NDVI/NDMI only, visual validation instead of reference labels.
+## Sources
+- swisstopo (2025): CLASSIFY – Gesundheitsgrad von Buchen. https://www.swisstopo.admin.ch/de/classify-gesundheitsgrad-von-buchen
+- STDL PROJ-HETRES documentation: https://tech.stdl.ch/PROJ-HETRES/
+- Course template: https://hendrikwulf.github.io/sds320-jb/book/lessons/l02/project-transfer/
