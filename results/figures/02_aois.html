@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_0e6cc77c9e2a84ca115ea3feee22785e {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+    
+                    <style>
+                        .foliumtooltip {
+                            
+                        }
+                       .foliumtooltip table{
+                            margin: auto;
+                        }
+                        .foliumtooltip tr{
+                            text-align: left;
+                        }
+                        .foliumtooltip th{
+                            padding: 2px; padding-right: 8px;
+                        }
+                    </style>
+            
+    
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>$( function() {
+        $( ".maplegend" ).draggable({
+            start: function (event, ui) {
+                $(this).css({
+                    right: "auto",
+                    top: "auto",
+                    bottom: "auto"
+                });
+            }
+        });
+    });
+    </script>
+    <style type='text/css'>
+      .maplegend {
+        position: absolute;
+        z-index:9999;
+        background-color: rgba(255, 255, 255, .8);
+        border-radius: 5px;
+        box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        padding: 10px;
+        font: 12px/14px Arial, Helvetica, sans-serif;
+        right: 10px;
+        bottom: 20px;
+      }
+      .maplegend .legend-title {
+        text-align: left;
+        margin-bottom: 5px;
+        font-weight: bold;
+        }
+      .maplegend .legend-scale ul {
+        margin: 0;
+        margin-bottom: 0px;
+        padding: 0;
+        float: left;
+        list-style: none;
+        }
+      .maplegend .legend-scale ul li {
+        list-style: none;
+        margin-left: 0;
+        line-height: 16px;
+        margin-bottom: 2px;
+        }
+      .maplegend ul.legend-labels li span {
+        display: block;
+        float: left;
+        height: 14px;
+        width: 14px;
+        margin-right: 5px;
+        margin-left: 0;
+        border: 0px solid #ccc;
+        }
+      .maplegend .legend-source {
+        color: #777;
+        clear: both;
+        }
+      .maplegend a {
+        color: #777;
+        }
+    </style>
+    
+</head>
+<body>
+    
+    
+    <div id='maplegend aoi' class='maplegend'>
+        <div class='legend-title'>aoi</div>
+        <div class='legend-scale'>
+            <ul class='legend-labels'>
+                <li><span style='background:#1f77b4'></span>ajoie_ju</li>
+                <li><span style='background:#8c564b'></span>fricktal_ag</li>
+                <li><span style='background:#9edae5'></span>valais_rhone</li>
+            </ul>
+        </div>
+    </div>
+    
+    
+            <div class="folium-map" id="map_0e6cc77c9e2a84ca115ea3feee22785e" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_0e6cc77c9e2a84ca115ea3feee22785e = L.map(
+                "map_0e6cc77c9e2a84ca115ea3feee22785e",
+                {
+                    center: [46.89, 7.56],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 10,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_0e6cc77c9e2a84ca115ea3feee22785e);
+
+            
+
+        
+    
+            var tile_layer_bc25433b028fe9d3ee5e8ba647eb4531 = L.tileLayer(
+                "https://wmts.geo.admin.ch/1.0.0/ch.swisstopo.pixelkarte-farbe/default/current/3857/{z}/{x}/{y}.jpeg",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "\u00a9 swisstopo",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_bc25433b028fe9d3ee5e8ba647eb4531.addTo(map_0e6cc77c9e2a84ca115ea3feee22785e);
+        
+    
+            map_0e6cc77c9e2a84ca115ea3feee22785e.fitBounds(
+                [[46.25, 7.02], [47.53, 8.1]],
+                {}
+            );
+        
+    
+        function geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_styler(feature) {
+            switch(feature.id) {
+                case "0": 
+                    return {"color": "#1f77b4", "fillColor": "#1f77b4", "fillOpacity": 0.25, "weight": 2};
+                case "1": 
+                    return {"color": "#8c564b", "fillColor": "#8c564b", "fillOpacity": 0.25, "weight": 2};
+                default:
+                    return {"color": "#9edae5", "fillColor": "#9edae5", "fillOpacity": 0.25, "weight": 2};
+            }
+        }
+        function geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_highlighter(feature) {
+            switch(feature.id) {
+                default:
+                    return {"fillOpacity": 0.75};
+            }
+        }
+        function geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_pointToLayer(feature, latlng) {
+            var opts = {
+  "stroke": true,
+  "color": "#3388ff",
+  "weight": 3,
+  "opacity": 1.0,
+  "lineCap": "round",
+  "lineJoin": "round",
+  "dashArray": null,
+  "dashOffset": null,
+  "fill": true,
+  "fillColor": "#3388ff",
+  "fillOpacity": 0.2,
+  "fillRule": "evenodd",
+  "bubblingMouseEvents": true,
+  "radius": 2,
+};
+            
+            let style = geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_styler(feature)
+            Object.assign(opts, style)
+            
+            return new L.CircleMarker(latlng, opts)
+        }
+
+        function geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_onEachFeature(feature, layer) {
+
+            layer.on({
+                mouseout: function(e) {
+                    if(typeof e.target.setStyle === "function"){
+                            geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a.resetStyle(e.target);
+                    }
+                },
+                mouseover: function(e) {
+                    if(typeof e.target.setStyle === "function"){
+                        const highlightStyle = geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_highlighter(e.target.feature)
+                        e.target.setStyle(highlightStyle);
+                    }
+                },
+            });
+        };
+        var geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a = L.geoJson(null, {
+                onEachFeature: geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_onEachFeature,
+            
+                style: geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_styler,
+                pointToLayer: geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_pointToLayer,
+            ...{
+}
+        });
+
+        function geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_add (data) {
+            geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a
+                .addData(data);
+        }
+            geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a_add({"bbox": [7.02, 46.25, 8.1, 47.53], "features": [{"bbox": [7.02, 47.39, 7.2, 47.5], "geometry": {"coordinates": [[[7.2, 47.39], [7.2, 47.5], [7.02, 47.5], [7.02, 47.39], [7.2, 47.39]]], "type": "Polygon"}, "id": "0", "properties": {"__folium_color": "#1f77b4", "aoi": "ajoie_ju", "area_km2": 165.98096825862447, "label": "Ajoie (JU)", "note": "Beech dieback hotspot after 2018 drought (swisstopo/STDL CLASSIFY, WSL \u0027Ajoie\u0027 module).", "role": "target / out-of-region test"}, "type": "Feature"}, {"bbox": [7.93, 47.42, 8.1, 47.53], "geometry": {"coordinates": [[[8.1, 47.42], [8.1, 47.53], [7.93, 47.53], [7.93, 47.42], [8.1, 47.42]]], "type": "Polygon"}, "id": "1", "properties": {"__folium_color": "#8c564b", "aoi": "fricktal_ag", "area_km2": 156.61450586124934, "label": "Fricktal / Tafeljura (AG)", "note": "Comparable limestone Jura-type, beech-dominated mixed forest; similar elevation range.", "role": "train / validation"}, "type": "Feature"}, {"bbox": [7.5, 46.25, 7.7, 46.35], "geometry": {"coordinates": [[[7.7, 46.25], [7.7, 46.35], [7.5, 46.35], [7.5, 46.25], [7.7, 46.25]]], "type": "Polygon"}, "id": "2", "properties": {"__folium_color": "#9edae5", "aoi": "valais_rhone", "area_km2": 171.1908076392103, "label": "Rhone valley (VS)", "note": "Inner-alpine dry valley (Pfynwald area); mostly Scots pine/oak, NOT beech -\u003e tests transferability.", "role": "domain-shift test"}, "type": "Feature"}], "type": "FeatureCollection"});
+
+        
+    
+    geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a.bindTooltip(
+    function(layer){
+    let div = L.DomUtil.create('div');
+    
+    let handleObject = feature => {
+        if (feature === null) {
+            return '';
+        } else if (typeof(feature)=='object') {
+            return JSON.stringify(feature);
+        } else {
+            return feature;
+        }
+    }
+    let fields = ["label", "role", "area_km2"];
+    let aliases = ["label", "role", "area_km2"];
+    let table = '<table>' +
+        String(
+        fields.map(
+        (v,i)=>
+        `<tr>
+            <th>${aliases[i]}</th>
+            
+            <td>${handleObject(layer.feature.properties[v])}</td>
+        </tr>`).join(''))
+    +'</table>';
+    div.innerHTML=table;
+    
+    return div
+    }
+    ,{
+  "sticky": true,
+  "className": "foliumtooltip",
+});
+                     
+    
+            geo_json_e0ceb0077bb6b57bc9c5b28e60195c9a.addTo(map_0e6cc77c9e2a84ca115ea3feee22785e);
+        
+</script>
+</html>

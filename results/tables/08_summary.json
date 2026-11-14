@@ -1,0 +1,92 @@
+{
+  "regression_test_ajoie": [
+    {
+      "model": "mean of training target",
+      "rmse": 0.0555,
+      "mae": 0.0347,
+      "r2": -0.0198,
+      "spearman": NaN
+    },
+    {
+      "model": "linear: +0.024 +0.61\u00b7\u0394NDVI2018",
+      "rmse": 0.0386,
+      "mae": 0.0252,
+      "r2": 0.5069,
+      "spearman": 0.632
+    },
+    {
+      "model": "Random Forest (pixel features)",
+      "rmse": 0.0345,
+      "mae": 0.0221,
+      "r2": 0.6069,
+      "spearman": 0.6819
+    },
+    {
+      "model": "U-Net ResNet-34 (geoai pixel regressor)",
+      "rmse": 631.8891,
+      "mae": 39.9908,
+      "r2": -131988168.0,
+      "spearman": 0.1845
+    }
+  ],
+  "embedding_change": {
+    "spearman_cos_dndvi": 0.21448742229090095,
+    "spearman_cos_absdndvi": 0.2648286937325316,
+    "decline_share_lowest5pct": 0.12731351654514864,
+    "decline_share_all": 0.02503531655198281
+  },
+  "embedding_vs_handmade": [
+    {
+      "features": "hand-made bands + indices 2017/18 (30)",
+      "precision": 0.203,
+      "recall": 0.036,
+      "f1": 0.061,
+      "iou": 0.032
+    },
+    {
+      "features": "TESSERA embeddings 2017/18 (256)",
+      "precision": 0.167,
+      "recall": 0.001,
+      "f1": 0.003,
+      "iou": 0.001
+    },
+    {
+      "features": "both (286)",
+      "precision": 0.265,
+      "recall": 0.012,
+      "f1": 0.023,
+      "iou": 0.012
+    }
+  ],
+  "segmentation_test_ajoie": [
+    {
+      "model": "U-Net ResNet-34 (geoai)",
+      "predicted_share": 0.091,
+      "precision": 0.086,
+      "recall": 0.288,
+      "f1": 0.132,
+      "iou": 0.071
+    },
+    {
+      "model": "Random Forest (pixel features)",
+      "predicted_share": 0.008,
+      "precision": 0.204,
+      "recall": 0.063,
+      "f1": 0.096,
+      "iou": 0.05
+    },
+    {
+      "model": "rule: \u0394NDVI 2018 z \u2264 \u22121.5",
+      "predicted_share": 0.119,
+      "precision": 0.132,
+      "recall": 0.579,
+      "f1": 0.215,
+      "iou": 0.121
+    }
+  ],
+  "n_pixels": {
+    "train": 451224,
+    "val": 177034,
+    "test": 654291
+  }
+}

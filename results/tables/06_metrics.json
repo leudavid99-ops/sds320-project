@@ -1,0 +1,175 @@
+{
+  "label_source": "proxy",
+  "target": "dNDVI_late_2019_mean",
+  "feature_years": [
+    2017,
+    2018
+  ],
+  "n_features": 38,
+  "n_train": 29345,
+  "best_params": {
+    "randomforestclassifier__min_samples_leaf": "10",
+    "randomforestclassifier__max_features": "0.3",
+    "randomforestclassifier__max_depth": "20"
+  },
+  "cv": [
+    {
+      "model": "RF classifier",
+      "validation": "random 70/30 (STDL-style)",
+      "accuracy": 0.925,
+      "balanced_acc": 0.509,
+      "macro_f1": 0.548,
+      "qwk": 0.433,
+      "mae": 0.089
+    },
+    {
+      "model": "\u0394NDVI-2018 threshold rule",
+      "validation": "no fitting",
+      "accuracy": 0.892,
+      "balanced_acc": 0.538,
+      "macro_f1": 0.527,
+      "qwk": 0.425,
+      "mae": 0.123
+    },
+    {
+      "model": "dummy (majority)",
+      "validation": "random 5-fold",
+      "accuracy": 0.921,
+      "balanced_acc": 0.333,
+      "macro_f1": 0.32,
+      "qwk": 0.0,
+      "mae": 0.098
+    },
+    {
+      "model": "dummy (majority)",
+      "validation": "spatial block 5-fold",
+      "accuracy": 0.921,
+      "balanced_acc": 0.333,
+      "macro_f1": 0.32,
+      "qwk": 0.0,
+      "mae": 0.098
+    },
+    {
+      "model": "RF classifier",
+      "validation": "random 5-fold",
+      "accuracy": 0.925,
+      "balanced_acc": 0.506,
+      "macro_f1": 0.548,
+      "qwk": 0.419,
+      "mae": 0.089
+    },
+    {
+      "model": "RF classifier",
+      "validation": "spatial block 5-fold",
+      "accuracy": 0.922,
+      "balanced_acc": 0.484,
+      "macro_f1": 0.523,
+      "qwk": 0.387,
+      "mae": 0.092
+    },
+    {
+      "model": "RF ordinal regressor",
+      "validation": "random 5-fold",
+      "accuracy": 0.921,
+      "balanced_acc": 0.441,
+      "macro_f1": 0.466,
+      "qwk": 0.394,
+      "mae": 0.088
+    },
+    {
+      "model": "RF ordinal regressor",
+      "validation": "spatial block 5-fold",
+      "accuracy": 0.917,
+      "balanced_acc": 0.427,
+      "macro_f1": 0.446,
+      "qwk": 0.359,
+      "mae": 0.092
+    }
+  ],
+  "test": [
+    {
+      "aoi": "ajoie_ju",
+      "model": "RF classifier (tuned)",
+      "n": 32123,
+      "accuracy": 0.713,
+      "balanced_acc": 0.625,
+      "macro_f1": 0.462,
+      "qwk": 0.309,
+      "mae": 0.339
+    },
+    {
+      "aoi": "ajoie_ju",
+      "model": "RF classifier, features standardised per AOI",
+      "n": 32123,
+      "accuracy": 0.856,
+      "balanced_acc": 0.497,
+      "macro_f1": 0.485,
+      "qwk": 0.392,
+      "mae": 0.166
+    },
+    {
+      "aoi": "ajoie_ju",
+      "model": "\u0394NDVI-2018 threshold rule",
+      "n": 32123,
+      "accuracy": 0.871,
+      "balanced_acc": 0.527,
+      "macro_f1": 0.529,
+      "qwk": 0.449,
+      "mae": 0.145
+    },
+    {
+      "aoi": "ajoie_ju",
+      "model": "dummy (majority)",
+      "n": 32123,
+      "accuracy": 0.892,
+      "balanced_acc": 0.333,
+      "macro_f1": 0.314,
+      "qwk": 0.0,
+      "mae": 0.133
+    },
+    {
+      "aoi": "valais_rhone",
+      "model": "RF classifier (tuned)",
+      "n": 38921,
+      "accuracy": 0.831,
+      "balanced_acc": 0.537,
+      "macro_f1": 0.466,
+      "qwk": 0.297,
+      "mae": 0.191
+    },
+    {
+      "aoi": "valais_rhone",
+      "model": "RF classifier, features standardised per AOI",
+      "n": 38921,
+      "accuracy": 0.891,
+      "balanced_acc": 0.471,
+      "macro_f1": 0.478,
+      "qwk": 0.336,
+      "mae": 0.12
+    },
+    {
+      "aoi": "valais_rhone",
+      "model": "\u0394NDVI-2018 threshold rule",
+      "n": 38921,
+      "accuracy": 0.882,
+      "balanced_acc": 0.521,
+      "macro_f1": 0.5,
+      "qwk": 0.367,
+      "mae": 0.133
+    },
+    {
+      "aoi": "valais_rhone",
+      "model": "dummy (majority)",
+      "n": 38921,
+      "accuracy": 0.924,
+      "balanced_acc": 0.333,
+      "macro_f1": 0.32,
+      "qwk": 0.0,
+      "mae": 0.092
+    }
+  ],
+  "aoa_inside": {
+    "ajoie_ju": 0.7684525106621424,
+    "valais_rhone": 0.3072377379820662
+  }
+}

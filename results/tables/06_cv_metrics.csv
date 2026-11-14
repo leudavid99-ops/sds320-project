@@ -1,0 +1,9 @@
+model,validation,accuracy,balanced_acc,macro_f1,qwk,mae
+RF classifier,random 70/30 (STDL-style),0.925,0.509,0.548,0.433,0.089
+ΔNDVI-2018 threshold rule,no fitting,0.892,0.538,0.527,0.425,0.123
+dummy (majority),random 5-fold,0.921,0.333,0.32,0.0,0.098
+dummy (majority),spatial block 5-fold,0.921,0.333,0.32,0.0,0.098
+RF classifier,random 5-fold,0.925,0.506,0.548,0.419,0.089
+RF classifier,spatial block 5-fold,0.922,0.484,0.523,0.387,0.092
+RF ordinal regressor,random 5-fold,0.921,0.441,0.466,0.394,0.088
+RF ordinal regressor,spatial block 5-fold,0.917,0.427,0.446,0.359,0.092

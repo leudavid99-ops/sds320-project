@@ -15,7 +15,10 @@ import pandas as pd
 # --------------------------------------------------------------------------
 ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "data"
-PROC = DATA / "processed"
+# Derived data (composites, features, models) are large and rebuilt by the notebooks. The
+# ".nosync" suffix keeps the folder out of iCloud Drive: with a synced Desktop, iCloud uploaded
+# and evicted the files while they were being written, which stalled and corrupted reads.
+PROC = DATA / "derived.nosync"
 LABELS = DATA / "labels"
 FIGS = ROOT / "results" / "figures"
 TABLES = ROOT / "results" / "tables"
@@ -125,7 +128,9 @@ def read_on_grid(href, transform, width, height, resampling="bilinear", retries=
     for k in range(retries):
         try:
             with rasterio.Env(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", GDAL_HTTP_MAX_RETRY="3",
-                              GDAL_HTTP_RETRY_DELAY="1", GDAL_HTTP_TIMEOUT="60"):
+                              GDAL_HTTP_RETRY_DELAY="1", GDAL_HTTP_TIMEOUT="30",
+                              GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", GDAL_HTTP_MULTIPLEX="YES",
+                              VSI_CACHE="TRUE", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif"):
                 with rasterio.open(href) as src, WarpedVRT(
                         src, crs=CRS_UTM, transform=transform, width=width, height=height,
                         resampling=Resampling[resampling]) as vrt:
@@ -136,14 +141,14 @@ def read_on_grid(href, transform, width, height, resampling="bilinear", retries=
     raise err
 
 
-def _threaded(fn, args, workers=8):
+def _threaded(fn, args, workers=16):
     from concurrent.futures import ThreadPoolExecutor
 
     with ThreadPoolExecutor(workers) as ex:
         return list(ex.map(fn, args))
 
 
-def composite_s2(items, aoi, bands=S2_BANDS, workers=8):
+def composite_s2(items, aoi, bands=S2_BANDS, workers=16):
     """Cloud-masked per-pixel median composite of `items` on the AOI grid.
 
     Per scene the SCL layer gives the valid mask; reflectance = DN * 1e-4, minus the
@@ -202,8 +207,28 @@ def add_indices(ds):
     return ds
 
 
+def open_nc(path):
+    """Open a cached NetCDF file with an explicit engine (engine guessing is fragile)."""
+    import xarray as xr
+
+    return xr.open_dataset(path, engine="netcdf4")
+
+
 def composite_path(aoi, year, window):
     return PROC / f"{aoi}_{year}_{window}.nc"
+
+
+MAX_DAYS = 12  # per window: use the least cloudy acquisition days only (keeps downloads bounded)
+
+
+def least_cloudy_days(items, max_days=MAX_DAYS):
+    """Keep all scenes of the `max_days` acquisition days with the lowest scene cloud cover."""
+    best = {}
+    for i in items:
+        d = i.datetime.date()
+        best[d] = min(best.get(d, 101.0), i.properties.get("eo:cloud_cover", 100.0))
+    keep = set(sorted(best, key=best.get)[:max_days])
+    return [i for i in items if i.datetime.date() in keep]
 
 
 def build_composite(aoi, year, window, max_cloud=70, overwrite=False):
@@ -213,13 +238,14 @@ def build_composite(aoi, year, window, max_cloud=70, overwrite=False):
 
     path = composite_path(aoi, year, window)
     if path.exists() and not overwrite:
-        return xr.open_dataset(path).load()
+        return open_nc(path).load()
 
     bbox = AOIS[aoi]["bbox"]
     d0, d1 = WINDOWS[window]
     items = search_s2(bbox, f"{year}-{d0}", f"{year}-{d1}", max_cloud)
     if not items:
         raise RuntimeError(f"No scenes for {aoi} {year} {window}")
+    items = least_cloudy_days(items)
     comp = add_indices(composite_s2(items, aoi))
     comp = comp.rio.write_crs(CRS_UTM)
     comp.attrs.update(aoi=aoi, year=year, window=window, n_scenes=len(items))
@@ -234,18 +260,18 @@ def open_composite(aoi, year, window):
     import rioxarray  # noqa: F401
     import xarray as xr
 
-    ds = xr.open_dataset(composite_path(aoi, year, window)).load()
+    ds = open_nc(composite_path(aoi, year, window)).load()
     return ds.rio.write_crs(CRS_UTM)
 
 
 def load_ancillary(aoi, ref=None, overwrite=False):
-    """ESA WorldCover 2021 tree mask + Copernicus DEM GLO-30 (elevation, slope, aspect)
-    on the AOI grid. `ref` is kept for backwards compatibility and ignored."""
+    """ESA WorldCover 2021 tree mask (`forest` = interior pixels, `forest_all` = all tree
+    cover) + Copernicus DEM GLO-30 (elevation, slope, aspect) on the AOI grid. `ref` is kept for backwards compatibility and ignored."""
     import xarray as xr
 
     path = PROC / f"{aoi}_ancillary.nc"
     if path.exists() and not overwrite:
-        return xr.open_dataset(path).load()
+        return open_nc(path).load()
 
     cat = _catalog()
     bbox = AOIS[aoi]["bbox"]
@@ -263,7 +289,13 @@ def load_ancillary(aoi, ref=None, overwrite=False):
     wc = mosaic("esa-worldcover", "map", "nearest", datetime="2021-01-01/2021-12-31")
     elev = mosaic("cop-dem-glo-30", "data", "bilinear")
     slope, aspect = slope_aspect(elev, res=10.0)
-    anc = xr.Dataset(dict(forest=(("y", "x"), (wc == 10).astype("uint8")),   # 10 = tree cover
+    # Forest = WorldCover tree cover (class 10), shrunk by one pixel. Edge pixels mix canopy with
+    # fields or roads and shift slightly between years, which shows up as false change.
+    from scipy.ndimage import binary_erosion
+    tree = wc == 10
+    core = binary_erosion(tree, structure=np.ones((3, 3), bool), border_value=1)
+    anc = xr.Dataset(dict(forest=(("y", "x"), core.astype("uint8")),
+                          forest_all=(("y", "x"), tree.astype("uint8")),
                           elevation=(("y", "x"), elev), slope=(("y", "x"), slope),
                           aspect=(("y", "x"), aspect)), coords=dict(x=x, y=y))
     anc.to_netcdf(path, encoding={v: dict(zlib=True, complevel=4) for v in anc.data_vars})
@@ -297,7 +329,7 @@ def detect_canopy_units(img, forest_mask, sigma=1.0, min_distance=2, min_value=N
 
     Method: local maximum filtering (Wulder et al. 2000; Popescu & Wynne 2004) to find
     treetop-like peaks, then watershed (Meyer & Beucher 1990) on the inverted image to
-    delineate one region per peak. At 10 m a 'unit' is a crown or small crown group.
+    delineate one region per peak. At 10 m a 'unit' is a small patch of neighbouring trees (median ~0.15 ha).
     Returns (peaks Nx2 array [row, col], labels int32 array, 0 = background).
     """
     from skimage.feature import peak_local_max

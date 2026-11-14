@@ -1,0 +1,4 @@
+model,predicted_share,precision,recall,f1,iou
+U-Net ResNet-34 (geoai),0.091,0.086,0.288,0.132,0.071
+Random Forest (pixel features),0.008,0.204,0.063,0.096,0.05
+rule: ΔNDVI 2018 z ≤ −1.5,0.119,0.132,0.579,0.215,0.121

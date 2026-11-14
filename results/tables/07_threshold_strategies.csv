@@ -1,0 +1,5 @@
+strategy,dNDVI_threshold,flagged_share,flagged_km2
+fixed ΔNDVI ≤ −0.05,-0.05,0.0806,5.3907
+Otsu,0.0588,0.9153,61.2385
+robust z ≤ -1.5,-0.0399,0.1102,7.3708
+robust z ≤ −3,-0.0835,0.0304,2.032

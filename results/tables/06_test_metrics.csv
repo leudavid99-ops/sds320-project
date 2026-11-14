@@ -1,0 +1,9 @@
+aoi,model,n,accuracy,balanced_acc,macro_f1,qwk,mae
+ajoie_ju,RF classifier (tuned),32123,0.713,0.625,0.462,0.309,0.339
+ajoie_ju,"RF classifier, features standardised per AOI",32123,0.856,0.497,0.485,0.392,0.166
+ajoie_ju,ΔNDVI-2018 threshold rule,32123,0.871,0.527,0.529,0.449,0.145
+ajoie_ju,dummy (majority),32123,0.892,0.333,0.314,0.0,0.133
+valais_rhone,RF classifier (tuned),38921,0.831,0.537,0.466,0.297,0.191
+valais_rhone,"RF classifier, features standardised per AOI",38921,0.891,0.471,0.478,0.336,0.12
+valais_rhone,ΔNDVI-2018 threshold rule,38921,0.882,0.521,0.5,0.367,0.133
+valais_rhone,dummy (majority),38921,0.924,0.333,0.32,0.0,0.092

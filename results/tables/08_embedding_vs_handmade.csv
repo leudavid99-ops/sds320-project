@@ -1,0 +1,4 @@
+features,precision,recall,f1,iou
+hand-made bands + indices 2017/18 (30),0.203,0.036,0.061,0.032
+TESSERA embeddings 2017/18 (256),0.167,0.001,0.003,0.001
+both (286),0.265,0.012,0.023,0.012

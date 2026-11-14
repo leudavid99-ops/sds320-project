@@ -9,13 +9,7 @@ __pycache__/
 data/raw/
 data/training/
 data/labels/
-data/processed/*.nc
-data/processed/*.gpkg
-data/processed/*.csv.gz
-data/processed/*.joblib
-data/processed/tessera/
-data/processed/tiles/
-data/processed/models/
+data/derived.nosync/
 lightning_logs/
 
 # personal backups
