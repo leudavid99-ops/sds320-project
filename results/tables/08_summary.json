@@ -23,10 +23,10 @@
     },
     {
       "model": "U-Net ResNet-34 (geoai pixel regressor)",
-      "rmse": 631.8891,
-      "mae": 39.9908,
-      "r2": -131988168.0,
-      "spearman": 0.1845
+      "rmse": 0.0434,
+      "mae": 0.026,
+      "r2": 0.3788,
+      "spearman": 0.5804
     }
   ],
   "embedding_change": {
@@ -38,50 +38,54 @@
   "embedding_vs_handmade": [
     {
       "features": "hand-made bands + indices 2017/18 (30)",
-      "precision": 0.203,
-      "recall": 0.036,
-      "f1": 0.061,
-      "iou": 0.032
+      "avg_precision": 0.16,
+      "roc_auc": 0.874,
+      "f1_matched_share": 0.217,
+      "iou_matched_share": 0.122
     },
     {
       "features": "TESSERA embeddings 2017/18 (256)",
-      "precision": 0.167,
-      "recall": 0.001,
-      "f1": 0.003,
-      "iou": 0.001
+      "avg_precision": 0.12,
+      "roc_auc": 0.83,
+      "f1_matched_share": 0.18,
+      "iou_matched_share": 0.099
     },
     {
       "features": "both (286)",
-      "precision": 0.265,
-      "recall": 0.012,
-      "f1": 0.023,
-      "iou": 0.012
+      "avg_precision": 0.173,
+      "roc_auc": 0.881,
+      "f1_matched_share": 0.229,
+      "iou_matched_share": 0.129
+    },
+    {
+      "features": "rule: \u2212\u0394NDVI 2018 (one value)",
+      "avg_precision": 0.173,
+      "roc_auc": 0.875,
+      "f1_matched_share": 0.21,
+      "iou_matched_share": 0.118
     }
   ],
   "segmentation_test_ajoie": [
     {
       "model": "U-Net ResNet-34 (geoai)",
-      "predicted_share": 0.091,
-      "precision": 0.086,
-      "recall": 0.288,
-      "f1": 0.132,
-      "iou": 0.071
+      "avg_precision": 0.074,
+      "roc_auc": 0.68,
+      "f1_matched_share": 0.112,
+      "iou_matched_share": 0.06
     },
     {
       "model": "Random Forest (pixel features)",
-      "predicted_share": 0.008,
-      "precision": 0.204,
-      "recall": 0.063,
-      "f1": 0.096,
-      "iou": 0.05
+      "avg_precision": 0.11,
+      "roc_auc": 0.807,
+      "f1_matched_share": 0.164,
+      "iou_matched_share": 0.09
     },
     {
-      "model": "rule: \u0394NDVI 2018 z \u2264 \u22121.5",
-      "predicted_share": 0.119,
-      "precision": 0.132,
-      "recall": 0.579,
-      "f1": 0.215,
-      "iou": 0.121
+      "model": "rule: \u2212\u0394NDVI 2018 (one value)",
+      "avg_precision": 0.152,
+      "roc_auc": 0.853,
+      "f1_matched_share": 0.203,
+      "iou_matched_share": 0.113
     }
   ],
   "n_pixels": {

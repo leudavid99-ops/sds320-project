@@ -44,7 +44,7 @@ A constraint runs through all of them: **the forester-assessed labels (HETRES, 2
 - **Imagery and bands:** Sentinel-2 late-summer composites of 2017 and 2018, nine bands each (B02, B03, B04, B05, B07, B08, B8A, B11, B12), stacked to 18 channels.
 - **Label source:** weak labels from the change rule of notebook 07 (relative NDVI drop in 2019 that persists in 2020). The labels come from later years than the input, so the model has to anticipate decline from the drought-year image.
 - **Architecture:** U-Net with a ResNet-34 encoder (`geoai.train_segmentation_model`, `num_channels=18`, `num_classes=2`).
-- **Metrics and imbalance:** IoU, F1, precision and recall of the decline class; the class covers only a few percent of the forest, so class weights are used and overall accuracy is not reported.
+- **Metrics and imbalance:** average precision and ROC AUC, plus F1 and IoU of the decline class when the model flags the same share of pixels as the reference; the class covers 2–3 % of the forest, so class weights are used and overall accuracy is not reported.
 - **Split:** region-based. Train in the western part of the Fricktal, validate in the eastern part (no shared tiles), test in the Ajoie.
 - **Output:** probability raster and class raster (GeoTIFF); vector patches only after a minimum mapping unit.
 - **Implemented:** notebook 08, part C. Later, with the aerial imagery: same recipe at 20 cm with dead-crown masks from photo-interpretation.
@@ -83,7 +83,7 @@ Implemented in notebook 08, part A.
 - **Continuous target:** ΔNDVI late summer 2019 − 2017 per 10 m forest pixel.
 - **Reference data and pairing:** the target is measured by Sentinel-2 itself one year after the input (2017 and 2018 bands); input and target share the grid, so pairing is exact.
 - **Valid range:** target limited to [−1, 1] at tiling; predictions clipped to the same range at inference; non-forest pixels excluded from all metrics.
-- **Architecture and loss:** U-Net with ResNet-34 encoder (`geoai.train_pixel_regressor`), Huber loss, because harvested pixels are outliers that would dominate MSE. Baselines: the 2018 change alone (linear fit) and a Random Forest on pixel features.
+- **Architecture and loss:** U-Net with ResNet-34 encoder (`geoai.train_pixel_regressor`), Huber loss, because harvested pixels are outliers that would dominate MSE; the target is multiplied by 20 for training, since the raw ΔNDVI values are too small for the network to learn from. Baselines: the 2018 change alone (linear fit) and a Random Forest on pixel features.
 - **Evaluation:** RMSE, MAE, R² on the Ajoie (never used in training), plus a residual map and an observed-vs-predicted scatter as spatial checks.
 
 ## L12 Segment Anything plan
@@ -102,5 +102,5 @@ Implemented in notebook 08, part B.
 - **Analysis goal:** (1) does change between annual embeddings point to the same places as the index-based change map; (2) are embeddings better features than hand-made indices for the decline proxy.
 - **Dataset:** TESSERA pixel embeddings (128 dimensions, 10 m, annual, via `geoai.tessera_download`), because they are built from Sentinel-1/2 time series at the same resolution as the rest of the project and need no account. Patch embeddings (Clay) are too coarse for single stands. AlphaEarth is the alternative but needs Earth Engine access.
 - **Labels:** no field labels. The decline proxy from notebook 07 gives labels for every forest pixel; with HETRES, 226 points would be realistic.
-- **Validation:** spatial block cross-validation inside the embedding tile, per-class precision, recall and F1, class balance reported.
+- **Validation:** spatial block cross-validation inside the embedding tile; average precision and ROC AUC because the decline class is rare (2.5 %), class balance reported.
 - **What an embedding result would not prove:** that the embedding "knows" tree health. High agreement with the proxy shows that embeddings encode the same spectral-temporal signal as NDVI change, and nothing about the cause of the decline.

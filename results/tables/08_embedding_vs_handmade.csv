@@ -1,4 +1,5 @@
-features,precision,recall,f1,iou
-hand-made bands + indices 2017/18 (30),0.203,0.036,0.061,0.032
-TESSERA embeddings 2017/18 (256),0.167,0.001,0.003,0.001
-both (286),0.265,0.012,0.023,0.012
+features,avg_precision,roc_auc,f1_matched_share,iou_matched_share
+hand-made bands + indices 2017/18 (30),0.16,0.874,0.217,0.122
+TESSERA embeddings 2017/18 (256),0.12,0.83,0.18,0.099
+both (286),0.173,0.881,0.229,0.129
+rule: −ΔNDVI 2018 (one value),0.173,0.875,0.21,0.118

@@ -2,4 +2,4 @@ model,rmse,mae,r2,spearman
 mean of training target,0.0555,0.0347,-0.0198,
 linear: +0.024 +0.61·ΔNDVI2018,0.0386,0.0252,0.5069,0.632
 Random Forest (pixel features),0.0345,0.0221,0.6069,0.6819
-U-Net ResNet-34 (geoai pixel regressor),631.8891,39.9908,-131988168.0,0.1845
+U-Net ResNet-34 (geoai pixel regressor),0.0434,0.026,0.3788,0.5804
